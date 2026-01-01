@@ -13,26 +13,26 @@
         body {
             font-family: 'Sarabun', sans-serif;
             background-color: #212529;
-            height: 100vh; /* เต็มความสูงหน้าจอ */
+            height: 100vh;
             margin: 0;
             display: flex;
-            flex-direction: column; /* เรียงแนวตั้ง: Navbar บน, Iframe ล่าง */
-            overflow: hidden; /* ห้าม Scroll ที่ตัว Body (ให้ไป Scroll ใน Iframe แทน) */
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        /* Navbar ปรับแต่ง */
+        /* Navbar */
         .custom-navbar {
             background-color: #1a1e21;
             border-bottom: 1px solid #343a40;
             padding: 0.5rem 1rem;
-            flex-shrink: 0; /* ห้าม Navbar หด */
+            flex-shrink: 0;
             z-index: 1000;
         }
 
         .navbar-brand {
             font-weight: bold;
             font-size: 1.1rem;
-            color: #ffc107 !important; /* สีเหลืองทอง */
+            color: #ffc107 !important;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -63,24 +63,32 @@
             color: white;
         }
 
+        /* Active: POS (Blue) */
         .nav-switch-btn.active {
-            background-color: #0d6efd; /* สีน้ำเงิน */
+            background-color: #0d6efd;
             color: white;
             border-color: #0d6efd;
             font-weight: bold;
             box-shadow: 0 0 10px rgba(13, 110, 253, 0.5);
         }
         
-        /* ปุ่ม Kitchen Active */
+        /* Active: Kitchen (Red) */
         .nav-switch-btn.btn-kitchen.active {
-            background-color: #dc3545; /* สีแดงสำหรับครัว */
+            background-color: #dc3545;
             border-color: #dc3545;
             box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
         }
 
-        /* พื้นที่ Iframe */
+        /* Active: Counter (Green) - NEW */
+        .nav-switch-btn.btn-counter.active {
+            background-color: #198754;
+            border-color: #198754;
+            box-shadow: 0 0 10px rgba(25, 135, 84, 0.5);
+        }
+
+        /* Iframe */
         .iframe-container {
-            flex-grow: 1; /* ยืดเต็มพื้นที่ที่เหลือ */
+            flex-grow: 1;
             position: relative;
             background-color: #f0f2f5;
             width: 100%;
@@ -102,7 +110,8 @@
         <div class="container-fluid p-0">
             <a class="navbar-brand" href="#">
                 <img src="https://cdn-icons-png.flaticon.com/512/3081/3081367.png" alt="Logo" class="logo-img">
-                <span class="d-none d-sm-inline">BloxBurg POS</span> </a>
+                <span class="d-none d-sm-inline">BloxBurg POS</span> 
+            </a>
 
             <div class="d-flex">
                 <button class="nav-switch-btn active" id="btnPos" onclick="switchTab('pos')">
@@ -110,6 +119,9 @@
                 </button>
                 <button class="nav-switch-btn btn-kitchen" id="btnKitchen" onclick="switchTab('kitchen')">
                     <i class="fas fa-fire"></i> ครัว
+                </button>
+                <button class="nav-switch-btn btn-counter" id="btnCounter" onclick="switchTab('counter')">
+                    <i class="fas fa-university"></i> เคาน์เตอร์
                 </button>
             </div>
         </div>
@@ -120,26 +132,33 @@
     </div>
 
     <script>
-        // URLs จาก Google Apps Script
-        const POS_URL = "https://script.google.com/macros/s/AKfycbwUZTJROodcVoeqLkX76tj85i0ME3GNiKwGItdVJkcrZ8UyNT83zPbiU1BhtaYVeZRT/exec";
-        const KITCHEN_URL = "https://script.google.com/macros/s/AKfycbwUZTJROodcVoeqLkX76tj85i0ME3GNiKwGItdVJkcrZ8UyNT83zPbiU1BhtaYVeZRT/exec?p=kitchen";
+        // URLs Configuration
+        const BASE_URL = "https://script.google.com/macros/s/AKfycbwUZTJROodcVoeqLkX76tj85i0ME3GNiKwGItdVJkcrZ8UyNT83zPbiU1BhtaYVeZRT/exec";
+        const POS_URL = BASE_URL;
+        const KITCHEN_URL = BASE_URL + "?p=kitchen";
+        const COUNTER_URL = BASE_URL + "?p=counter";
 
         const frame = document.getElementById('appFrame');
         const btnPos = document.getElementById('btnPos');
         const btnKitchen = document.getElementById('btnKitchen');
+        const btnCounter = document.getElementById('btnCounter');
 
         function switchTab(mode) {
-            // 1. เปลี่ยน Active Class ที่ปุ่ม
+            // 1. Reset Active Classes
+            btnPos.classList.remove('active');
+            btnKitchen.classList.remove('active');
+            btnCounter.classList.remove('active');
+
+            // 2. Set Active & Change Source
             if (mode === 'pos') {
                 btnPos.classList.add('active');
-                btnKitchen.classList.remove('active');
-                // เปลี่ยน URL Iframe
                 frame.src = POS_URL;
-            } else {
+            } else if (mode === 'kitchen') {
                 btnKitchen.classList.add('active');
-                btnPos.classList.remove('active');
-                // เปลี่ยน URL Iframe
                 frame.src = KITCHEN_URL;
+            } else if (mode === 'counter') {
+                btnCounter.classList.add('active');
+                frame.src = COUNTER_URL;
             }
         }
     </script>
